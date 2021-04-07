@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/loginbackground"
+    tools:context=".ProfileActivity">
+
+    <TextView
+        android:id="@+id/dummyname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:text="Name:"
+        android:layout_marginTop="40dp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/name"
+        android:padding="4dp"
+        android:textSize="16sp"
+        android:layout_marginLeft="30dp"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/inputs"
+        android:layout_below="@id/dummyname"/>
+    <TextView
+        android:id="@+id/dummyemail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:text="Email:"
+        android:layout_below="@id/name"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/email"
+        android:padding="4dp"
+        android:textSize="16sp"
+        android:layout_marginLeft="30dp"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/inputs"
+        android:layout_below="@id/dummyemail"/>
+    <TextView
+        android:id="@+id/dummyhobbies"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_below="@id/email"
+        android:text="Hobbies:"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/hobbies"
+        android:padding="4dp"
+        android:textSize="16sp"
+        android:layout_marginLeft="30dp"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/inputs"
+        android:layout_below="@id/dummyhobbies"/>
+
+
+</RelativeLayout>

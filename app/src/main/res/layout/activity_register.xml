@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/loginbackground"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity">
+    <EditText
+        android:id="@+id/register_userEmailID"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/inputs"
+        android:textColorHint="@android:color/darker_gray"
+        android:textColor="@color/black"
+        android:hint="  Enter your email"
+        android:drawableStart="@drawable/ic_baseline_email_24"/>
+    <EditText
+        android:id="@+id/register_userPassword"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:padding="4dp"
+        android:textColorHint="@android:color/darker_gray"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/register_userEmailID"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/inputs"
+        android:textColor="@color/black"
+        android:hint="  Enter your Password"
+        android:drawableStart="@drawable/ic_baseline_lock_24"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/register_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/register_userPassword"
+        android:background="@drawable/buttonbg"
+        android:layout_centerHorizontal="true"
+        android:text="Create New Account"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:layout_marginTop="20dp"/>
+    <EditText
+        android:id="@+id/register_hobbies"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/inputs"
+        android:textColorHint="@android:color/darker_gray"
+        android:textColor="@color/black"
+        android:hint="  Please enter your Hobbies"
+        android:visibility="invisible"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/register_button_final"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/register_name"
+        android:background="@drawable/buttonbg"
+        android:layout_centerHorizontal="true"
+        android:text="Continue"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+    <EditText
+        android:id="@+id/register_name"
+        android:layout_marginTop="20dp"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_below="@id/register_hobbies"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/inputs"
+        android:textColorHint="@android:color/darker_gray"
+        android:textColor="@color/black"
+        android:hint="  Please enter your Name"
+        android:visibility="invisible"/>
+
+</RelativeLayout>
