@@ -6,7 +6,9 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText userEmail, userPassword;
     private AppCompatButton loginBtn, createNewAccountBtn;
     private FirebaseAuth mAuth;
+    private long mLast = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initialiseFields();
         mAuth = FirebaseAuth.getInstance();
-        loginBtn.setOnClickListener(v -> loginUser());
+        loginBtn.setOnClickListener(v -> {
+            if (SystemClock.elapsedRealtime() - mLast < 3000){
+                return;
+            }
+            mLast = SystemClock.elapsedRealtime();
+            loginUser();
+        });
         createNewAccountBtn.setOnClickListener(v -> {
             Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
             startActivity(registerIntent);

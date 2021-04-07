@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,12 +19,15 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -43,18 +47,19 @@ import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileActivity extends AppCompatActivity implements LocationListener {
+public class ProfileActivity extends AppCompatActivity {
     private EditText profileName, profileEmail, profileHobbies, userLatitude, userLongitude, userAddress;
     private String currentUserId, name, email, hobbies, imageUrl, address;
     Double latitude, longitude;
     private CircleImageView profile_image;
     private AppCompatButton updateUserInfo, logoutUser, userLocation;
     private final int galleryPick =1;
-
+    private final int LOCATION_REQUEST_CODE = 1;
     private FirebaseAuth mAuth;
     private StorageReference profileImageRef;
     private DatabaseReference usersRef;
     LocationManager locationManager;
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         profileImageRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
         initialiseFields();
         retrieveUserData();
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(ProfileActivity.this);
         updateUserInfo.setOnClickListener(v -> updateUserProfile());
         profile_image.setOnClickListener(v -> {
             Intent galleryIntent = new Intent();
@@ -77,20 +83,83 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         userLocation.setOnClickListener(v -> findLocation());
     }
 
-    private void findLocation() {
-        if (ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-        != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION
-            }, 100);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_REQUEST_CODE){
+            if (grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                findLocation();
+            }
+            else {
+                Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
+            }
         }
-        else {
-            locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    5000, 5, ProfileActivity.this);
-        }
-
     }
+
+    private void findLocation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED){
+                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
+                    if (location != null){
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+                        try {
+                Geocoder geocoder = new Geocoder(ProfileActivity.this, Locale.getDefault());
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                address = addresses.get(0).getAddressLine(0);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                final View popupView = getLayoutInflater().inflate(R.layout.location_popup, null);
+                userLatitude = popupView.findViewById(R.id.latitude);
+                userLongitude = popupView.findViewById(R.id.longitude);
+                userAddress = popupView.findViewById(R.id.address);
+                userAddress.setText(address);
+                userLongitude.setText(longitude.toString());
+                userLatitude.setText(latitude.toString());
+                builder.setView(popupView);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+                    }
+
+                });
+
+            }else {
+                ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_REQUEST_CODE);
+            }
+        }
+    }
+
+//    private void findLocation() {
+//        if (ContextCompat.checkSelfPermission(ProfileActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED){
+//            ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{
+//                    android.Manifest.permission.ACCESS_FINE_LOCATION
+//            }, 100);
+//        }
+//        try {
+//            locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+//                    5000, 5, locationListener);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//
+//    }
+
+//    private void checkIfLocationIsEnabled() {
+//        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        boolean gpsEnabled = false;
+//        boolean networkEnabled = false;
+//    }
+//
+//    private void grantPermission() {
+//
+//    }
 
     private void logout() {
         mAuth.signOut();
@@ -146,17 +215,19 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                     Toast.makeText(ProfileActivity.this, "Done", Toast.LENGTH_SHORT).show();
+                    if (snapshot.hasChild("Image")){
+                        imageUrl = snapshot.child("Image").getValue().toString();
+                        Picasso.get()
+                                .load(imageUrl)
+                                .placeholder(R.drawable.profile_image)
+                                .into(profile_image);
+                    }
                     name = snapshot.child("Name").getValue().toString();
                     email = snapshot.child("Email").getValue().toString();
                     hobbies = snapshot.child("Hobbies").getValue().toString();
-                    imageUrl = snapshot.child("Image").getValue().toString();
                     profileHobbies.setText(hobbies);
                     profileName.setText(name);
                     profileEmail.setText(email);
-                    Picasso.get()
-                            .load(imageUrl)
-                            .placeholder(R.drawable.profile_image)
-                            .into(profile_image);
                 }
             }
 
@@ -188,45 +259,49 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         userLocation = findViewById(R.id.user_location);
     }
 
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        try {
-            Geocoder geocoder = new Geocoder(ProfileActivity.this, Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude,1);
-            address = addresses.get(0).getAddressLine(0);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            final View popupView = getLayoutInflater().inflate(R.layout.location_popup,null);
-            userLatitude = popupView.findViewById(R.id.latitude);
-            userLongitude = popupView.findViewById(R.id.longitude);
-            userAddress = popupView.findViewById(R.id.address);
-            userAddress.setText(address);
-            userLongitude.setText(longitude.toString());
-            userLatitude.setText(latitude.toString());
-            builder.setView(popupView);
-            AlertDialog dialog = builder.create();
-            dialog.show();
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-
-    }
+//    LocationListener locationListener = new LocationListener() {
+//
+//
+//        @Override
+//        public void onLocationChanged(@NonNull Location location) {
+//            latitude = location.getLatitude();
+//            longitude = location.getLongitude();
+//            try {
+//                Geocoder geocoder = new Geocoder(ProfileActivity.this, Locale.getDefault());
+//                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+//                address = addresses.get(0).getAddressLine(0);
+//
+//                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+//                final View popupView = getLayoutInflater().inflate(R.layout.location_popup, null);
+//                userLatitude = popupView.findViewById(R.id.latitude);
+//                userLongitude = popupView.findViewById(R.id.longitude);
+//                userAddress = popupView.findViewById(R.id.address);
+//                userAddress.setText(address);
+//                userLongitude.setText(longitude.toString());
+//                userLatitude.setText(latitude.toString());
+//                builder.setView(popupView);
+//                AlertDialog dialog = builder.create();
+//                dialog.show();
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
+//
+//        @Override
+//        public void onStatusChanged(String provider, int status, Bundle extras) {
+//
+//        }
+//
+//        @Override
+//        public void onProviderEnabled(@NonNull String provider) {
+//
+//        }
+//
+//        @Override
+//        public void onProviderDisabled(@NonNull String provider) {
+//
+//        }
+//    };
 }
