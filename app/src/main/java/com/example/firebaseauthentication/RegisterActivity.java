@@ -86,6 +86,12 @@ public class RegisterActivity extends AppCompatActivity {
                 }
                 else {
                     String message = task.getException().toString();
+                    registerEmail.setVisibility(View.VISIBLE);
+                    registerPassword.setVisibility(View.VISIBLE);
+                    createNewAccountButton.setVisibility(View.VISIBLE);
+                    registerHobbies.setVisibility(View.INVISIBLE);
+                    final_register.setVisibility(View.INVISIBLE);
+                    registerName.setVisibility(View.INVISIBLE);
                     Toast.makeText(this, "Error: " + message, Toast.LENGTH_SHORT).show();
                 }
 
