@@ -16,7 +16,7 @@
         android:background="@drawable/inputs"
         android:textColorHint="@android:color/darker_gray"
         android:textColor="@color/black"
-        android:hint="  Enter your email"
+        android:hint="Enter your email"
         android:drawableStart="@drawable/ic_baseline_email_24"/>
     <EditText
         android:id="@+id/userPassword"
@@ -30,7 +30,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/inputs"
         android:textColor="@color/black"
-        android:hint="  Enter your Password"
+        android:hint="Enter your Password"
         android:drawableStart="@drawable/ic_baseline_lock_24"/>
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/login_button"

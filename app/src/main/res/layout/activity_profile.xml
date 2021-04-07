@@ -7,17 +7,28 @@
     android:background="@drawable/loginbackground"
     tools:context=".ProfileActivity">
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_profile_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/profile_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        app:civ_border_width="1dp"
+        app:civ_border_color="@color/black"/>
+
     <TextView
         android:id="@+id/dummyname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="4dp"
+        android:layout_below="@id/user_profile_image"
         android:text="Name:"
         android:layout_marginTop="40dp"
         android:textColor="@color/black"
         android:layout_marginLeft="20dp"/>
 
-    <TextView
+    <EditText
         android:id="@+id/name"
         android:padding="4dp"
         android:textSize="16sp"
@@ -38,7 +49,7 @@
         android:textColor="@color/black"
         android:layout_marginLeft="20dp"/>
 
-    <TextView
+    <EditText
         android:id="@+id/email"
         android:padding="4dp"
         android:textSize="16sp"
@@ -59,7 +70,7 @@
         android:textColor="@color/black"
         android:layout_marginLeft="20dp"/>
 
-    <TextView
+    <EditText
         android:id="@+id/hobbies"
         android:padding="4dp"
         android:textSize="16sp"
@@ -69,6 +80,41 @@
         android:layout_height="wrap_content"
         android:background="@drawable/inputs"
         android:layout_below="@id/dummyhobbies"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/update_user_profile"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/inputs"
+        android:layout_centerHorizontal="true"
+        android:text="UPDATE"
+        android:textColor="@color/black"
+        android:layout_below="@id/hobbies"
+        android:layout_marginTop="20dp"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/user_location"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="@drawable/inputs"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:text="get location"
+        android:drawableStart="@drawable/ic_baseline_location_on_24"
+        android:layout_below="@id/update_user_profile"
+        android:layout_marginTop="20dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/logout_user"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:background="@drawable/inputs"
+        android:layout_centerHorizontal="true"
+        android:text="LOGOUT"
+        android:layout_below="@id/user_location"
+        android:layout_marginTop="20dp"/>
+
 
 
 </RelativeLayout>

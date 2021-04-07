@@ -6,6 +6,20 @@
     android:background="@drawable/loginbackground"
     android:layout_height="match_parent"
     tools:context=".RegisterActivity">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/profile_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        app:civ_border_color="@color/black"
+        android:visibility="invisible"
+        app:civ_border_width="1dp"/>
+
+
+
     <EditText
         android:id="@+id/register_userEmailID"
         android:layout_width="350dp"
